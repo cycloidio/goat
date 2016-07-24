@@ -1,4 +1,4 @@
-# Goat [![Build Status](https://travis-ci.org/cycloidio/goat.svg?branch=develop)](https://travis-ci.org/cycloidio/goat)
+# Goat [![Build Status](https://travis-ci.org/cycloidio/goat.svg?branch=develop)](https://travis-ci.org/cycloidio/goat) [![Coverage Status](https://coveralls.io/repos/github/cycloidio/goat/badge.svg)](https://coveralls.io/github/cycloidio/goat)
 
 ## What is Goat?
 
