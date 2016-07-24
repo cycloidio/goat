@@ -1,8 +1,10 @@
 language: go
+sudo: false
 go:
  - 1.6.2
  - tip
-
+before_install:
+ - go get -v github.com/mattn/goveralls
 script:
- - go test -v -cover ./... 
- - go tool vet -shadow=true */
+ - make all cov
+ - $HOME/gopath/bin/goveralls -service=travis-ci -coverprofile=coverage.out
