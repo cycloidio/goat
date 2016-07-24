@@ -1,4 +1,4 @@
-# Goat
+# Goat [![Build Status](https://travis-ci.org/cycloidio/goat.svg?branch=develop)](https://travis-ci.org/cycloidio/goat)
 
 ## What is Goat?
 
