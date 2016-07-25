@@ -8,7 +8,7 @@ before_install:
  - go get -v github.com/mattn/goveralls
 
 script:
- - make all cov
+ - make all cov fmtcheck
  - $HOME/gopath/bin/goveralls -service=travis-ci -coverprofile=coverage.out
 
 notifications:
