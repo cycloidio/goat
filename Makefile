@@ -2,6 +2,7 @@ SHELL := /bin/sh
 GOPROCS := 4
 SRC := $(wildcard *.go)
 COVFILE := coverage.out
+GOFILES_NOVENDOR := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
 .PHONY: all
 all: vet test
@@ -10,11 +11,18 @@ all: vet test
 clean:
 	go clean -i ./...
 
+.PHONY: fmtcheck
+fmtcheck:
+	@if [ "$(shell gofmt -l $(GOFILES_NOVENDOR) | wc -l)" != "0" ]; then \
+		echo "Files missing go fmt: $(shell gofmt -l $(GOFILES_NOVENDOR))"; exit 2; \
+	fi
+	gofmt -l $(GOFILES_NOVENDOR)
+
 .PHONY: format
 format:
 	go fmt ./...
 
-#.PHONY: cov
+.PHONY: cov
 cov: $(COVFILE)
 	go tool cover -func=$(COVFILE)
 
