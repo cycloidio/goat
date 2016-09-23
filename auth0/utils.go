@@ -1,16 +1,21 @@
 package goat
 
-import "runtime"
+import (
+	"net/url"
+	"runtime"
+)
 
 func BuildParamsURL(params map[string]string) string {
 	if params == nil || len(params) == 0 {
 		return ""
 	}
-	var params_url = ""
-	for _, val := range params {
-		params_url += "?" + val
+	var baseUrl = "?"
+	params_url := url.Values{}
+
+	for key, val := range params {
+		params_url.Add(key, val)
 	}
-	return params_url
+	return baseUrl + params_url.Encode()
 }
 
 func GetFuncName() string {
