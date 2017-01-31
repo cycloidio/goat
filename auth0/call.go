@@ -16,16 +16,16 @@ const (
 )
 
 type Auth0 struct {
-	domain       string
-	client       *http.Client
-	api_url      string
-	resp_status  string
-	resp_headers map[string][]string
-	resp_body    []byte
-	token        string
+	domain      string
+	client      *http.Client
+	apiURL      string
+	respStatus  string
+	respHeaders map[string][]string
+	respBody    []byte
+	token       string
 }
 
-func Auth0New(auth0_domain, api_version, token string) *Auth0 {
+func Auth0New(auth0Domain, apiVersion, token string) *Auth0 {
 	var netTransport = &http.Transport{
 		Dial: (&net.Dialer{
 			Timeout: 5 * time.Second,
@@ -38,14 +38,14 @@ func Auth0New(auth0_domain, api_version, token string) *Auth0 {
 		Timeout:   time.Second * 10,
 		Transport: netTransport,
 	}
-	a.domain = auth0_domain
-	a.api_url = api_version
+	a.domain = auth0Domain
+	a.apiURL = apiVersion
 	a.token = token
 	return &a
 }
 
-func (a *Auth0) Call(api_action string, method string, body []byte) ([]byte, error) {
-	var uri = a.domain + a.api_url + api_action
+func (a *Auth0) Call(apiAction string, method string, body []byte) ([]byte, error) {
+	var uri = a.domain + a.apiURL + apiAction
 
 	_, err := a.client.Get(uri)
 	if err != nil {
@@ -59,12 +59,12 @@ func (a *Auth0) Call(api_action string, method string, body []byte) ([]byte, err
 		return nil, err
 	}
 	defer resp.Body.Close()
-	a.resp_status = resp.Status
-	a.resp_headers = resp.Header
+	a.respStatus = resp.Status
+	a.respHeaders = resp.Header
 	res_body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	a.resp_body = res_body
+	a.respBody = res_body
 	return res_body, nil
 }

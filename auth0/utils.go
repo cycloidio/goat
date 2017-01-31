@@ -6,11 +6,11 @@ func BuildParamsURL(params map[string]string) string {
 	if params == nil || len(params) == 0 {
 		return ""
 	}
-	var params_url = ""
+	var paramsURL = ""
 	for _, val := range params {
-		params_url += "?" + val
+		paramsURL += "?" + val
 	}
-	return params_url
+	return paramsURL
 }
 
 func GetFuncName() string {
