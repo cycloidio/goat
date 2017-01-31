@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"runtime"
 	"time"
 )
 
@@ -60,4 +61,10 @@ func (a *Auth0) Call(apiEndPoint string, method string, body []byte) ([]byte, er
 	}
 	a.respBody = res_body
 	return res_body, nil
+}
+
+// getFuncName is a helper function used to compose the error messages
+func getFuncName() string {
+	pc, _, _, _ := runtime.Caller(1)
+	return runtime.FuncForPC(pc).Name()
 }
