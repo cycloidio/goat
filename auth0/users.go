@@ -6,12 +6,12 @@ import (
 )
 
 func (a *Auth0) UserCall(method string, userID string, params map[string]string, body []byte) ([]byte, error) {
-	var apiAction = "/users"
+	var apiEndPoint = "/users"
 	if len(userID) > 0 {
-		apiAction += "/" + userID
+		apiEndPoint += "/" + userID
 	}
-	apiAction += BuildParamsURL(params)
-	return a.Call(apiAction, method, body)
+	apiEndPoint += BuildParamsURL(params)
+	return a.Call(apiEndPoint, method, body)
 }
 
 func (a *Auth0) CreateUser(body []byte) ([]byte, error) {

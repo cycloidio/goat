@@ -11,14 +11,14 @@ import (
 type Auth0 struct {
 	domain      string
 	client      *http.Client
-	apiURL      string
+	apiBasePath string
 	respStatus  string
 	respHeaders map[string][]string
 	respBody    []byte
 	token       string
 }
 
-func Auth0New(auth0Domain, apiVersion, token string) *Auth0 {
+func Auth0New(auth0Domain, apiBasePath, token string) *Auth0 {
 	var netTransport = &http.Transport{
 		Dial: (&net.Dialer{
 			Timeout: 5 * time.Second,
@@ -26,19 +26,19 @@ func Auth0New(auth0Domain, apiVersion, token string) *Auth0 {
 		TLSHandshakeTimeout: 5 * time.Second,
 	}
 
-	a := Auth0{}
-	a.client = &http.Client{
-		Timeout:   time.Second * 10,
-		Transport: netTransport,
+	return &Auth0{
+		client: &http.Client{
+			Timeout:   time.Second * 10,
+			Transport: netTransport,
+		},
+		domain:      auth0Domain,
+		apiBasePath: apiBasePath,
+		token:       token,
 	}
-	a.domain = auth0Domain
-	a.apiURL = apiVersion
-	a.token = token
-	return &a
 }
 
-func (a *Auth0) Call(apiAction string, method string, body []byte) ([]byte, error) {
-	var uri = a.domain + a.apiURL + apiAction
+func (a *Auth0) Call(apiEndPoint string, method string, body []byte) ([]byte, error) {
+	var uri = a.domain + a.apiBasePath + apiEndPoint
 
 	_, err := a.client.Get(uri)
 	if err != nil {
