@@ -3,14 +3,18 @@ package goat
 import (
 	"errors"
 	"net/http"
+	"net/url"
 )
 
-func (a *Auth0) UserCall(method string, userID string, params map[string]string, body []byte) ([]byte, error) {
+func (a *Auth0) UserCall(method string, userID string, params url.Values, body []byte) ([]byte, error) {
 	var apiEndPoint = "/users"
 	if len(userID) > 0 {
 		apiEndPoint += "/" + userID
 	}
-	apiEndPoint += BuildParamsURL(params)
+	if params != nil {
+		apiEndPoint += params.Encode()
+	}
+
 	return a.Call(apiEndPoint, method, body)
 }
 
@@ -28,7 +32,7 @@ func (a *Auth0) GetUser(userID string) ([]byte, error) {
 	return a.UserCall(http.MethodGet, userID, nil, nil)
 }
 
-func (a *Auth0) GetUsers(params map[string]string) ([]byte, error) {
+func (a *Auth0) GetUsers(params url.Values) ([]byte, error) {
 	return a.UserCall(http.MethodGet, "", params, nil)
 }
 

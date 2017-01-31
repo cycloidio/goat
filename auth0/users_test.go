@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/cycloidio/goat/auth0"
@@ -29,7 +30,7 @@ type MethodCheck struct {
 	testName     string
 	userID       string
 	body         []byte
-	params       map[string]string // Unused currently
+	params       url.Values
 	jsonExpected []byte
 	errExpected  bool
 }
@@ -45,7 +46,7 @@ var CheckUsersMethods = map[string][]MethodCheck{
 		{"User is valid", "user-id", nil, nil, jsonOK, false},
 	},
 	"GetUsers": {
-		{"With parameters", "", nil, map[string]string{"page": "1", "per_page": "42"}, jsonOK, false},
+		{"With parameters", "", nil, url.Values{"page": []string{"1"}, "per_page": []string{"42"}}, jsonOK, false},
 		{"Without parameters", "", nil, nil, jsonOK, false},
 	},
 	"UpdateUser": {
