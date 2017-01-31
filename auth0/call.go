@@ -8,13 +8,6 @@ import (
 	"time"
 )
 
-const (
-	DELETE = "DELETE"
-	GET    = "GET"
-	PATCH  = "PATCH"
-	POST   = "POST"
-)
-
 type Auth0 struct {
 	domain      string
 	client      *http.Client
