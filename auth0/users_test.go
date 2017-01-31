@@ -23,7 +23,7 @@ func init() {
 	ts = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, string(bodySample))
 	}))
-	a = goat.Auth0New(ts.URL, "", "")
+	a = goat.NewAuth0(ts.URL, "", "")
 }
 
 type MethodCheck struct {

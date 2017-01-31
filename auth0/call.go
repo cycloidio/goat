@@ -19,7 +19,7 @@ type Auth0 struct {
 	token       string
 }
 
-func Auth0New(auth0Domain, apiBasePath, token string) *Auth0 {
+func NewAuth0(auth0Domain, apiBasePath, token string) *Auth0 {
 	var netTransport = &http.Transport{
 		Dial: (&net.Dialer{
 			Timeout: 5 * time.Second,
