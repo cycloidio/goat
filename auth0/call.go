@@ -5,27 +5,21 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"runtime"
 	"time"
 )
 
-const (
-	DELETE = "DELETE"
-	GET    = "GET"
-	PATCH  = "PATCH"
-	POST   = "POST"
-)
-
 type Auth0 struct {
-	domain       string
-	client       *http.Client
-	api_url      string
-	resp_status  string
-	resp_headers map[string][]string
-	resp_body    []byte
-	token        string
+	domain      string
+	client      *http.Client
+	apiBasePath string
+	respStatus  string
+	respHeaders map[string][]string
+	respBody    []byte
+	token       string
 }
 
-func Auth0New(auth0_domain, api_version, token string) *Auth0 {
+func NewAuth0(auth0Domain, apiBasePath, token string) *Auth0 {
 	var netTransport = &http.Transport{
 		Dial: (&net.Dialer{
 			Timeout: 5 * time.Second,
@@ -33,19 +27,19 @@ func Auth0New(auth0_domain, api_version, token string) *Auth0 {
 		TLSHandshakeTimeout: 5 * time.Second,
 	}
 
-	a := Auth0{}
-	a.client = &http.Client{
-		Timeout:   time.Second * 10,
-		Transport: netTransport,
+	return &Auth0{
+		client: &http.Client{
+			Timeout:   time.Second * 10,
+			Transport: netTransport,
+		},
+		domain:      auth0Domain,
+		apiBasePath: apiBasePath,
+		token:       token,
 	}
-	a.domain = auth0_domain
-	a.api_url = api_version
-	a.token = token
-	return &a
 }
 
-func (a *Auth0) Call(api_action string, method string, body []byte) ([]byte, error) {
-	var uri = a.domain + a.api_url + api_action
+func (a *Auth0) Call(apiEndPoint string, method string, body []byte) ([]byte, error) {
+	var uri = a.domain + a.apiBasePath + apiEndPoint
 
 	_, err := a.client.Get(uri)
 	if err != nil {
@@ -59,12 +53,18 @@ func (a *Auth0) Call(api_action string, method string, body []byte) ([]byte, err
 		return nil, err
 	}
 	defer resp.Body.Close()
-	a.resp_status = resp.Status
-	a.resp_headers = resp.Header
+	a.respStatus = resp.Status
+	a.respHeaders = resp.Header
 	res_body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	a.resp_body = res_body
+	a.respBody = res_body
 	return res_body, nil
+}
+
+// getFuncName is a helper function used to compose the error messages
+func getFuncName() string {
+	pc, _, _, _ := runtime.Caller(1)
+	return runtime.FuncForPC(pc).Name()
 }

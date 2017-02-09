@@ -5,7 +5,7 @@
 Goat is a golang SDK for auth0 API.
 
 It tries to answer the lack of SDK in golang for auth0.
-Currently most of the users method have been implemented but some methods are still missing optionnal paremeters.
+Currently most of the users method have been implemented but some methods are still missing optional parameters.
 
 Any contributions are welcome!
 
@@ -23,11 +23,11 @@ In order to use the SDK:
 ```go
 import 	"github.com/cycloidio/goat/auth0"
 
-var auth0_domain = https://cycloid.eu.auth0.com // your auth0 domain
-var auth0_api_version = /api/v2                 // the API version you want to call
-var auth0_token                                 // the token you want to use
+var auth0Domain = https://cycloid.eu.auth0.com // your auth0 domain
+var auth0APIBasePath = /api/v2                 // the API base path
+var auth0Token = "XXXXXX"                      // the token you want to use
 
-var auth0 = goat.Auth0New(auth0_domain, auth0_api, auth0_token)
+var auth0 = goat.NewAuth0(auth0Domain, auth0APIBasePath, auth0Token)
 ```
 
 The idea behind the token variable is to be able to use different tokens, based on your needs instead of having a token that can do everything. 
@@ -36,11 +36,12 @@ The idea behind the token variable is to be able to use different tokens, based 
 
 You can then call any of the methods that have been implemented or call arbitrary a method via the `Call` method.
 Example of re-implementing the `GetUser` method:
+
 ```go
 // This method
 json, err := auth0.GetUser("github|testing-user")
 // is identical to
-json, err := auth0.Call("/users/github|testing-user", goat.GET, nil)
+json, err := auth0.Call("/users/github|testing-user", http.MethodGet, nil)
 ```
 
 ## License

@@ -3,49 +3,51 @@ package goat_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/cycloidio/goat/auth0"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
+
+	"github.com/cycloidio/goat/auth0"
 )
 
 const (
-	BODY_SAMPLE = "{'return': 'ok'}"
+	bodySample = "{'return': 'ok'}"
 )
 
-var JSON_OK = []byte(BODY_SAMPLE)
+var jsonOK = []byte(bodySample)
 var ts *httptest.Server
 var a *goat.Auth0
 
 func init() {
 	ts = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, string(BODY_SAMPLE))
+		fmt.Fprint(w, string(bodySample))
 	}))
-	a = goat.Auth0New(ts.URL, "", "")
+	a = goat.NewAuth0(ts.URL, "", "")
 }
 
 type MethodCheck struct {
-	test_name     string
-	user_id       string
-	body          []byte
-	params        map[string]string // Unused currently
-	json_expected []byte
-	err_expected  bool
+	testName     string
+	userID       string
+	body         []byte
+	params       url.Values
+	jsonExpected []byte
+	errExpected  bool
 }
 
 var CheckUsersMethods = map[string][]MethodCheck{
 	"CreateUser": {
 		{"Body should not be nil", "", nil, nil, nil, true},
 		{"Body should not be empty", "", []byte{}, nil, nil, true},
-		{"Body is valid", "", []byte{1, 7, 42}, nil, JSON_OK, false},
+		{"Body is valid", "", []byte{1, 7, 42}, nil, jsonOK, false},
 	},
 	"GetUser": {
 		{"User id cannot be empty", "", nil, nil, nil, true},
-		{"User is valid", "user-id", nil, nil, JSON_OK, false},
+		{"User is valid", "user-id", nil, nil, jsonOK, false},
 	},
 	"GetUsers": {
-		{"With parameters", "", nil, map[string]string{"page": "1", "per_page": "42"}, JSON_OK, false},
-		{"Without parameters", "", nil, nil, JSON_OK, false},
+		{"With parameters", "", nil, url.Values{"page": []string{"1"}, "per_page": []string{"42"}}, jsonOK, false},
+		{"Without parameters", "", nil, nil, jsonOK, false},
 	},
 	"UpdateUser": {
 		{"User id and body cannot be empty", "", []byte{}, nil, nil, true},
@@ -53,75 +55,75 @@ var CheckUsersMethods = map[string][]MethodCheck{
 		{"User id cannot be empty", "", []byte{1, 7, 42}, nil, nil, true},
 		{"Body cannot be nil", "user-id", nil, nil, nil, true},
 		{"Body cannot be empty", "user-id", []byte{}, nil, nil, true},
-		{"Body and user id are valid", "user-id", []byte{1, 7, 42}, nil, JSON_OK, false},
+		{"Body and user id are valid", "user-id", []byte{1, 7, 42}, nil, jsonOK, false},
 	},
 	"DeleteUser": {
 		{"User id cannot be empty", "", nil, nil, nil, true},
-		{"User id is valid", "user-id", nil, nil, JSON_OK, false},
+		{"User id is valid", "user-id", nil, nil, jsonOK, false},
 	},
 }
 
 func TestMethodCreateUser(t *testing.T) {
 	for _, call := range CheckUsersMethods["CreateUser"] {
-		fmt.Println("\t" + call.test_name)
+		fmt.Println("\t" + call.testName)
 		json, err := a.CreateUser(call.body)
-		if bytes.Compare(json, call.json_expected) != 0 {
-			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.test_name, string(call.json_expected), string(json))
+		if bytes.Compare(json, call.jsonExpected) != 0 {
+			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.testName, string(call.jsonExpected), string(json))
 		}
-		if (err != nil) != call.err_expected {
-			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.test_name, call.err_expected, err)
+		if (err != nil) != call.errExpected {
+			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.testName, call.errExpected, err)
 		}
 	}
 }
 
 func TestMethodGetUser(t *testing.T) {
 	for _, call := range CheckUsersMethods["GetUser"] {
-		fmt.Println("\t" + call.test_name)
-		json, err := a.GetUser(call.user_id)
-		if bytes.Compare(json, call.json_expected) != 0 {
-			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.test_name, string(call.json_expected), string(json))
+		fmt.Println("\t" + call.testName)
+		json, err := a.GetUser(call.userID)
+		if bytes.Compare(json, call.jsonExpected) != 0 {
+			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.testName, string(call.jsonExpected), string(json))
 		}
-		if (err != nil) != call.err_expected {
-			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.test_name, call.err_expected, err)
+		if (err != nil) != call.errExpected {
+			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.testName, call.errExpected, err)
 		}
 	}
 }
 
 func TestMethodGetUsers(t *testing.T) {
 	for _, call := range CheckUsersMethods["GetUsers"] {
-		fmt.Println("\t" + call.test_name)
+		fmt.Println("\t" + call.testName)
 		json, err := a.GetUsers(call.params)
-		if bytes.Compare(json, call.json_expected) != 0 {
-			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.test_name, string(call.json_expected), string(json))
+		if bytes.Compare(json, call.jsonExpected) != 0 {
+			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.testName, string(call.jsonExpected), string(json))
 		}
-		if (err != nil) != call.err_expected {
-			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.test_name, call.err_expected, err)
+		if (err != nil) != call.errExpected {
+			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.testName, call.errExpected, err)
 		}
 	}
 }
 
 func TestMethodUpdateUser(t *testing.T) {
 	for _, call := range CheckUsersMethods["UpdateUser"] {
-		fmt.Println("\t" + call.test_name)
-		json, err := a.UpdateUser(call.user_id, call.body)
-		if bytes.Compare(json, call.json_expected) != 0 {
-			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.test_name, string(call.json_expected), string(json))
+		fmt.Println("\t" + call.testName)
+		json, err := a.UpdateUser(call.userID, call.body)
+		if bytes.Compare(json, call.jsonExpected) != 0 {
+			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.testName, string(call.jsonExpected), string(json))
 		}
-		if (err != nil) != call.err_expected {
-			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.test_name, call.err_expected, err)
+		if (err != nil) != call.errExpected {
+			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.testName, call.errExpected, err)
 		}
 	}
 }
 
 func TestMethodDeleteUser(t *testing.T) {
 	for _, call := range CheckUsersMethods["DeleteUser"] {
-		fmt.Println("\t" + call.test_name)
-		json, err := a.DeleteUser(call.user_id)
-		if bytes.Compare(json, call.json_expected) != 0 {
-			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.test_name, string(call.json_expected), string(json))
+		fmt.Println("\t" + call.testName)
+		json, err := a.DeleteUser(call.userID)
+		if bytes.Compare(json, call.jsonExpected) != 0 {
+			t.Errorf("Failed test %#v:\nexpected json: %#v\ngot json: %#v", call.testName, string(call.jsonExpected), string(json))
 		}
-		if (err != nil) != call.err_expected {
-			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.test_name, call.err_expected, err)
+		if (err != nil) != call.errExpected {
+			t.Errorf("Failed test %#v:\nexpected err: %#v\ngot err: %#v", call.testName, call.errExpected, err)
 		}
 	}
 }
