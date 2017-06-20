@@ -23,9 +23,9 @@ In order to use the SDK:
 ```go
 import 	"github.com/cycloidio/goat/auth0"
 
-var auth0Domain = https://cycloid.eu.auth0.com // your auth0 domain
-var auth0APIBasePath = /api/v2                 // the API base path
-var auth0Token = "XXXXXX"                      // the token you want to use
+var auth0Domain = "https://cycloid.eu.auth0.com" // your auth0 domain
+var auth0APIBasePath = "/api/v2"                 // the API base path
+var auth0Token = "XXXXXX"                        // the token you want to use
 
 var auth0 = goat.NewAuth0(auth0Domain, auth0APIBasePath, auth0Token)
 ```
