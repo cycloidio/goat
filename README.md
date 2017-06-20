@@ -13,7 +13,7 @@ Any contributions are welcome!
 
 To get started, first make sure you've properly set up your Golang environment and then run the
 ```bash
-$ go get github.com/cycloidio/goat
+$ go get github.com/cycloidio/goat/auth0
 ```
 to get the latest version of the [goat](https://github.com/cycloidio/goat/).
 
