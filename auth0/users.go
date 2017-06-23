@@ -1,4 +1,4 @@
-package goat
+package goat // import "github.com/cycloidio/goat"
 
 import (
 	"errors"
