@@ -9,7 +9,7 @@ all: vet test
 
 .PHONY: clean
 clean:
-	go clean -i ./...
+	go clean -i
 
 .PHONY: fmtcheck
 fmtcheck:
@@ -20,7 +20,7 @@ fmtcheck:
 
 .PHONY: format
 format:
-	go fmt ./...
+	go fmt
 
 .PHONY: cov
 cov: $(COVFILE)
@@ -31,12 +31,12 @@ htmlcov: $(COVFILE)
 	go tool cover -html=$(COVFILE)
 
 $(COVFILE):
-	go test ./... -covermode=count -coverprofile=$(COVFILE)
+	go test  -covermode=count -coverprofile=$(COVFILE)
 
 .PHONY: test
 test:
-	go test -v ./... -coverprofile=$(COVFILE)
+	go test -v -coverprofile=$(COVFILE)
 
 .PHONY: vet
 vet:
-	go vet ./...
+	go vet
