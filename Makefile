@@ -17,14 +17,14 @@ clean:                 ## Clean removes object files from package source directo
 
 .PHONY: fmtcheck
 fmtcheck:              ## Checks the files format
-	@if [ "$(shell gofmt -l $(GOFILES_NOVENDOR) | wc -l)" != "0" ]; then \
-		echo "Files missing go fmt: $(shell gofmt -l $(GOFILES_NOVENDOR))"; exit 2; \
+	@if [ "$(shell goimports -l $(GOFILES_NOVENDOR) | wc -l)" != "0" ]; then \
+		echo "Files missing go fmt: $(shell goimports -l $(GOFILES_NOVENDOR))"; exit 2; \
 	fi
-	@gofmt -l $(GOFILES_NOVENDOR)
+	@goimports -l $(GOFILES_NOVENDOR)
 
 .PHONY: format
 format:                ## Checks the files format
-	@go fmt
+	@go imports
 
 .PHONY: cov
 cov: $(COVFILE)        ## Shows coverage
