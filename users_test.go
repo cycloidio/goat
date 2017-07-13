@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"testing"
 
-	goat "github.com/cycloidio/goat/auth0"
+	"github.com/cycloidio/goat"
 )
 
 const (
