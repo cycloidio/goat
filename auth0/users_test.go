@@ -127,3 +127,12 @@ func TestMethodDeleteUser(t *testing.T) {
 		}
 	}
 }
+
+func TestMethodCallGet(t *testing.T) {
+	a_bis := goat.Auth0New("invalid://testing:9042/", "", "")
+	fmt.Println("\tTesting invalid URL for Call - Client.Get")
+	_, err := a_bis.Call("does_no_exist", "GET", nil)
+	if err == nil {
+		t.Error("Failed test:\nexpected error\ngot nil instead")
+	}
+}
