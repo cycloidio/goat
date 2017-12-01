@@ -1,13 +1,13 @@
 # Goat [![Build Status](https://travis-ci.org/cycloidio/goat.svg?branch=develop)](https://travis-ci.org/cycloidio/goat) [![Coverage Status](https://coveralls.io/repos/github/cycloidio/goat/badge.svg)](https://coveralls.io/github/cycloidio/goat)
 
+**THIS LIBRARY IS NO LONGER MAINTAINED**
+
 ## What is Goat?
 
 Goat is a golang SDK for auth0 API.
 
 It tries to answer the lack of SDK in golang for auth0.
 Currently most of the users method have been implemented but some methods are still missing optional parameters.
-
-Any contributions are welcome!
 
 ## Getting started
 
